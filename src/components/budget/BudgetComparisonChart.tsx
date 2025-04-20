@@ -29,20 +29,57 @@ export function BudgetComparisonChart({ transactions, budgets, categories }: Bud
     };
   });
 
+  // Filter out categories with no budget and no spending
+  const filteredChartData = chartData.filter(item => item.budget > 0 || item.spent > 0);
+
   return (
-    <div className="h-[400px] w-full">
-      <ResponsiveContainer>
-        <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis tickFormatter={(value) => formatCurrency(value)} />
+    <div className="w-full h-[350px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart 
+          data={filteredChartData} 
+          margin={{ top: 20, right: 30, left: 20, bottom: 65 }}
+          barGap={5}
+        >
+          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+          <XAxis 
+            dataKey="name" 
+            angle={-45}
+            textAnchor="end"
+            height={60}
+            tick={{ fontSize: 12 }}
+          />
+          <YAxis 
+            tickFormatter={(value) => `$${value}`} 
+            width={80}
+          />
           <Tooltip 
             formatter={(value: number) => formatCurrency(value)}
             labelFormatter={(label) => `Category: ${label}`}
+            cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }}
+            contentStyle={{ 
+              borderRadius: '8px',
+              border: '1px solid #e2e8f0',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+            }}
           />
-          <Legend />
-          <Bar dataKey="budget" fill="#9b87f5" name="Budget" />
-          <Bar dataKey="spent" fill="#ea384c" name="Spent" />
+          <Legend 
+            verticalAlign="top" 
+            height={36} 
+            align="center"
+            wrapperStyle={{ paddingTop: '10px' }}
+          />
+          <Bar 
+            dataKey="budget" 
+            fill="#9b87f5" 
+            name="Budget" 
+            radius={[4, 4, 0, 0]} 
+          />
+          <Bar 
+            dataKey="spent" 
+            fill="#ea384c" 
+            name="Spent"
+            radius={[4, 4, 0, 0]}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>

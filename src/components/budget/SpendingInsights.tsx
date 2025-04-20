@@ -27,6 +27,7 @@ export function SpendingInsights({ transactions, budgets, categories }: Spending
     
     return {
       category: category.name,
+      color: category.color,
       spent,
       budget,
       percentageUsed,
@@ -34,16 +35,16 @@ export function SpendingInsights({ transactions, budgets, categories }: Spending
     };
   });
 
-  const overBudgetCategories = insights.filter(i => i.percentageUsed > 90);
+  const overBudgetCategories = insights.filter(i => i.percentageUsed > 90 && i.budget > 0);
   const underUtilizedCategories = insights.filter(i => i.percentageUsed < 20 && i.budget > 0);
 
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold mb-4">Spending Insights</h2>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4">
         {overBudgetCategories.length > 0 && (
           <Card className="bg-red-500/10">
-            <CardHeader>
+            <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
                 <TrendingUp className="h-4 w-4" />
                 Over Budget Alert
@@ -52,9 +53,18 @@ export function SpendingInsights({ transactions, budgets, categories }: Spending
             <CardContent>
               <ul className="space-y-2">
                 {overBudgetCategories.map(insight => (
-                  <li key={insight.category}>
-                    {insight.category}: Spent {formatCurrency(insight.spent)} of {formatCurrency(insight.budget)} 
-                    ({insight.percentageUsed.toFixed(0)}%)
+                  <li key={insight.category} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-2 h-2 rounded-full"
+                        style={{ backgroundColor: insight.color }}
+                      />
+                      <span>{insight.category}</span>
+                    </div>
+                    <div className="text-sm font-medium">
+                      {formatCurrency(insight.spent)} of {formatCurrency(insight.budget)} 
+                      <span className="ml-2 text-red-600">({Math.round(insight.percentageUsed)}%)</span>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -64,7 +74,7 @@ export function SpendingInsights({ transactions, budgets, categories }: Spending
 
         {underUtilizedCategories.length > 0 && (
           <Card className="bg-green-500/10">
-            <CardHeader>
+            <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
                 <TrendingDown className="h-4 w-4" />
                 Under Budget Categories
@@ -73,11 +83,33 @@ export function SpendingInsights({ transactions, budgets, categories }: Spending
             <CardContent>
               <ul className="space-y-2">
                 {underUtilizedCategories.map(insight => (
-                  <li key={insight.category}>
-                    {insight.category}: {formatCurrency(insight.remaining)} remaining
+                  <li key={insight.category} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-2 h-2 rounded-full"
+                        style={{ backgroundColor: insight.color }}
+                      />
+                      <span>{insight.category}</span>
+                    </div>
+                    <div className="text-sm font-medium">
+                      {formatCurrency(insight.remaining)} remaining
+                      <span className="ml-2 text-green-600">({Math.round(insight.percentageUsed)}% used)</span>
+                    </div>
                   </li>
                 ))}
               </ul>
+            </CardContent>
+          </Card>
+        )}
+        
+        {overBudgetCategories.length === 0 && underUtilizedCategories.length === 0 && (
+          <Card>
+            <CardContent className="pt-6 flex items-center justify-center flex-col text-center">
+              <Info className="h-10 w-10 text-muted-foreground mb-2" />
+              <p>No budget insights available yet.</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Set up your budgets and track your spending to see insights here.
+              </p>
             </CardContent>
           </Card>
         )}

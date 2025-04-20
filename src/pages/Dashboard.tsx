@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Transaction, MOCK_MONTHLY_DATA, DEFAULT_CATEGORIES, INITIAL_BUDGETS, Budget, formatCurrency } from '@/types/finance';
 import { ExpensesChart } from '@/components/dashboard/ExpensesChart';
@@ -118,7 +117,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-6 animate-fade-in">
+    <div className="p-6 animate-fade-in max-w-[1400px] mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
         <p className="text-muted-foreground">Your financial overview at a glance</p>
@@ -145,7 +144,7 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div className="finance-card">
           <h2 className="text-lg font-semibold mb-4">Monthly Expenses</h2>
           <ExpensesChart data={MOCK_MONTHLY_DATA} />
@@ -154,21 +153,15 @@ export default function Dashboard() {
           <h2 className="text-lg font-semibold mb-4">Spending by Category</h2>
           <CategoryPieChart transactions={transactions} />
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div className="finance-card">
           <h2 className="text-lg font-semibold mb-4">Budget vs Actual</h2>
           <BudgetComparisonChart 
             transactions={transactions}
             budgets={budgets}
             categories={DEFAULT_CATEGORIES}
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div className="finance-card">
-          <BudgetManager 
-            budgets={budgets}
-            onUpdateBudget={handleUpdateBudget}
           />
         </div>
         <div className="space-y-6">
@@ -180,14 +173,19 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div className="lg:col-span-2">
-          <RecentTransactionCard transactions={transactions.slice(0, 5)} showCategory />
+          <div className="finance-card">
+            <BudgetManager 
+              budgets={budgets}
+              onUpdateBudget={handleUpdateBudget}
+            />
+          </div>
         </div>
         <div>
-          <div className="finance-card mb-4">
+          <div className="finance-card h-full">
             <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-            <div className="space-y-2">
+            <div className="space-y-3">
               <Button onClick={openAddForm} className="w-full gap-2">
                 <PlusIcon className="h-5 w-5" />
                 Add Transaction
@@ -205,8 +203,14 @@ export default function Dashboard() {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <RecentTransactionCard transactions={transactions.slice(0, 5)} showCategory />
+        </div>
+      </div>
+
       {showCategories && (
-        <div className="col-span-full">
+        <div className="mt-8">
           <div className="finance-card">
             <h2 className="text-lg font-semibold mb-4">Categories</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
