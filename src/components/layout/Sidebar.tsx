@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -9,6 +8,7 @@ import {
   LogOut,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 interface SidebarProps {
   className?: string;
@@ -37,30 +37,25 @@ const NavItem = ({ icon: Icon, label, to, active }: NavItemProps) => (
 );
 
 export function Sidebar({ className }: SidebarProps) {
-  // Get current path for active route styling
   const [activePath, setActivePath] = React.useState('/');
   
   React.useEffect(() => {
-    // In a real app with react-router, we would use location.pathname
-    // For now just use window.location
     setActivePath(window.location.pathname);
   }, []);
 
   return (
-    <aside 
-      className={cn(
-        "h-screen w-64 border-r border-border flex flex-col bg-sidebar-background",
-        className
-      )}
-    >
-      <div className="p-4">
+    <aside className={cn(
+      "h-screen w-64 border-r border-border flex flex-col bg-sidebar-background",
+      className
+    )}>
+      <div className="p-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold flex items-center">
           <span className="text-finance-orange">UP</span>finance
           <span className="text-xs ml-1 mt-1">®</span>
         </h1>
+        <ThemeToggle />
       </div>
 
-      {/* Profile section */}
       <div className="px-4 py-6 flex flex-col items-center">
         <div className="h-20 w-20 rounded-full bg-gray-200 relative mb-3 overflow-hidden">
           <img 
@@ -74,7 +69,6 @@ export function Sidebar({ className }: SidebarProps) {
         <p className="text-sm text-muted-foreground">john@example.com</p>
       </div>
       
-      {/* Navigation */}
       <nav className="mt-4 px-3 flex-1 space-y-1">
         <NavItem icon={Home} label="Dashboard" to="/" active={activePath === '/'} />
         <NavItem icon={BarChart2} label="Analytics" to="/analytics" active={activePath.includes('/analytics')} />
@@ -82,7 +76,6 @@ export function Sidebar({ className }: SidebarProps) {
         <NavItem icon={Settings} label="Settings" to="/settings" active={activePath.includes('/settings')} />
       </nav>
 
-      {/* Logout button */}
       <div className="p-4">
         <button 
           className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-sidebar-foreground hover:bg-sidebar-accent transition-colors"

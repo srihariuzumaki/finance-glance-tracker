@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { Transaction, MOCK_MONTHLY_DATA, formatCurrency } from '@/types/finance';
+import { Transaction, MOCK_MONTHLY_DATA, formatCurrency, DEFAULT_CATEGORIES } from '@/types/finance';
 import { ExpensesChart } from '@/components/dashboard/ExpensesChart';
 import { SummaryCards } from '@/components/dashboard/SummaryCards';
 import { CategoryPieChart } from '@/components/dashboard/CategoryPieChart';
@@ -47,6 +46,7 @@ export default function Dashboard() {
   const [transactions, setTransactions] = useState<Transaction[]>(INITIAL_TRANSACTIONS);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>(undefined);
+  const [showCategories, setShowCategories] = useState(false);
 
   // Calculate totals for the summary
   const totalIncome = transactions
@@ -152,7 +152,7 @@ export default function Dashboard() {
       {/* Recent Transactions and Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <RecentTransactionCard transactions={transactions.slice(0, 5)} />
+          <RecentTransactionCard transactions={transactions.slice(0, 5)} showCategory />
         </div>
         <div>
           <div className="finance-card mb-4">
@@ -162,14 +162,42 @@ export default function Dashboard() {
                 <PlusIcon className="h-5 w-5" />
                 Add Transaction
               </Button>
-              <Button variant="outline" className="w-full gap-2">
+              <Button 
+                variant="outline" 
+                className="w-full gap-2"
+                onClick={() => setShowCategories(!showCategories)}
+              >
                 <PieChart className="h-5 w-5" />
-                View Categories
+                {showCategories ? 'Hide Categories' : 'View Categories'}
               </Button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Categories Section */}
+      {showCategories && (
+        <div className="col-span-full">
+          <div className="finance-card">
+            <h2 className="text-lg font-semibold mb-4">Categories</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {DEFAULT_CATEGORIES.map((category) => (
+                <div
+                  key={category.id}
+                  className="p-4 rounded-lg border flex items-center gap-2"
+                  style={{ borderColor: category.color + '40', background: category.color + '10' }}
+                >
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: category.color }}
+                  />
+                  <span>{category.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Transaction Form Modal */}
       <TransactionForm 
