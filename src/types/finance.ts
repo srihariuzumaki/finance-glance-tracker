@@ -1,11 +1,10 @@
-
 // Define types for financial data
 export type Transaction = {
   id: string;
   amount: number;
   date: Date;
   description: string;
-  category?: string;
+  category: string;
 };
 
 export type Category = {

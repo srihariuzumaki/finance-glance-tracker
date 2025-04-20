@@ -1,14 +1,13 @@
-
-import { useState, useEffect } from 'react';
-import { Transaction, MOCK_MONTHLY_DATA, formatCurrency } from '@/types/finance';
+import { useState } from 'react';
+import { Transaction, MOCK_MONTHLY_DATA } from '@/types/finance';
 import { ExpensesChart } from '@/components/dashboard/ExpensesChart';
 import { SummaryCards } from '@/components/dashboard/SummaryCards';
+import { CategoryPieChart } from '@/components/dashboard/CategoryPieChart';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { RecentTransactionCard } from '@/components/dashboard/RecentTransactionCard';
-import { TransactionList } from '@/components/transactions/TransactionList';
 import { TransactionForm } from '@/components/transactions/TransactionForm';
 import { Button } from '@/components/ui/button';
-import { BarChart2, PlusIcon, CreditCard, DollarSign } from 'lucide-react';
+import { PlusIcon, CreditCard, DollarSign, PieChart } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 // Mock initial transactions
@@ -133,121 +132,40 @@ export default function Dashboard() {
         />
       </div>
       
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Chart */}
-        <div className="lg:col-span-2">
-          <div className="finance-card bg-finance-darkCard text-white">
-            <div className="flex justify-between items-start mb-6">
-              <div>
-                <h2 className="text-xl font-bold">Analytics</h2>
-                <p className="text-sm text-white/70">Optimize your expenses</p>
-              </div>
-              <div className="text-right">
-                <p className="text-2xl font-bold">{formatCurrency(135200.94)}</p>
-              </div>
-            </div>
-            <ExpensesChart data={MOCK_MONTHLY_DATA} />
-          </div>
-          
-          {/* Available Budget */}
-          <div className="finance-card mt-6 bg-finance-orange">
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="text-white/80 text-sm">Available</h3>
-                <h2 className="text-white text-2xl font-bold">this Month</h2>
-              </div>
-              <Button variant="outline" className="bg-white/20 text-white border-white/20 hover:bg-white/30">
-                Change
-              </Button>
-            </div>
-            <div className="mt-6 text-center">
-              <p className="text-4xl font-bold text-white">{formatCurrency(18000)}</p>
-            </div>
-            
-            {/* Budget progress circle - simplified for now */}
-            <div className="mt-6 flex items-center justify-center">
-              <div className="relative h-32 w-32 rounded-full border-8 border-white/30 flex items-center justify-center">
-                <p className="text-2xl font-bold text-white">{formatCurrency(10800)}</p>
-              </div>
-            </div>
-            <p className="text-center mt-2 text-white font-medium">17 December</p>
-          </div>
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="finance-card">
+          <h2 className="text-lg font-semibold mb-4">Monthly Expenses</h2>
+          <ExpensesChart data={MOCK_MONTHLY_DATA} />
         </div>
-        
-        {/* Right Column - Activity */}
-        <div>
-          {/* Recent Transactions */}
-          <div className="finance-card mb-6">
-            <h3 className="font-bold">Operation</h3>
-            <p className="text-sm text-muted-foreground mb-4">Spent this day</p>
-            <div className="text-3xl font-bold mb-6">{formatCurrency(23570.20)}</div>
-            
-            {/* Progress bar indicator */}
-            <div className="w-full h-1.5 bg-gray-200 rounded-full mb-6">
-              <div className="h-full bg-finance-green rounded-full w-2/3"></div>
-            </div>
-            
-            {/* Recent transactions list */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                    <span>S</span>
-                  </div>
-                  <div>
-                    <p className="font-medium">Sean Kim</p>
-                    <p className="text-xs text-muted-foreground">Transfer</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-finance-green font-medium">+$130.00</p>
-                  <p className="text-xs text-muted-foreground">5:28 AM</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                    <span>A</span>
-                  </div>
-                  <div>
-                    <p className="font-medium">Apple</p>
-                    <p className="text-xs text-muted-foreground">Purchase</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-finance-red font-medium">-$940.00</p>
-                  <p className="text-xs text-muted-foreground">2:16 AM</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                    <span>D</span>
-                  </div>
-                  <div>
-                    <p className="font-medium">Dribbble</p>
-                    <p className="text-xs text-muted-foreground">Purchase</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-finance-red font-medium">-$8.00</p>
-                  <p className="text-xs text-muted-foreground">8:59 PM</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Add Transaction Button */}
-          <Button onClick={openAddForm} className="w-full gap-2 bg-finance-orange hover:bg-finance-orange/90 text-white">
-            <PlusIcon className="h-5 w-5" />
-            Add Transaction
-          </Button>
+        <div className="finance-card">
+          <h2 className="text-lg font-semibold mb-4">Spending by Category</h2>
+          <CategoryPieChart transactions={transactions} />
         </div>
       </div>
-      
+
+      {/* Recent Transactions and Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <RecentTransactionCard transactions={transactions.slice(0, 5)} />
+        </div>
+        <div>
+          <div className="finance-card mb-4">
+            <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+            <div className="space-y-2">
+              <Button onClick={openAddForm} className="w-full gap-2">
+                <PlusIcon className="h-5 w-5" />
+                Add Transaction
+              </Button>
+              <Button variant="outline" className="w-full gap-2">
+                <PieChart className="h-5 w-5" />
+                View Categories
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Transaction Form Modal */}
       <TransactionForm 
         isOpen={isFormOpen}
