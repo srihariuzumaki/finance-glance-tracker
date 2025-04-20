@@ -1,11 +1,15 @@
+
 import { useState } from 'react';
-import { Transaction, MOCK_MONTHLY_DATA, DEFAULT_CATEGORIES, INITIAL_BUDGETS, Budget } from '@/types/finance';
+import { Transaction, MOCK_MONTHLY_DATA, DEFAULT_CATEGORIES, INITIAL_BUDGETS, Budget, formatCurrency } from '@/types/finance';
 import { ExpensesChart } from '@/components/dashboard/ExpensesChart';
 import { SummaryCards } from '@/components/dashboard/SummaryCards';
 import { CategoryPieChart } from '@/components/dashboard/CategoryPieChart';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { RecentTransactionCard } from '@/components/dashboard/RecentTransactionCard';
 import { TransactionForm } from '@/components/transactions/TransactionForm';
+import { BudgetComparisonChart } from '@/components/budget/BudgetComparisonChart';
+import { BudgetManager } from '@/components/budget/BudgetManager';
+import { SpendingInsights } from '@/components/budget/SpendingInsights';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, CreditCard, DollarSign, PieChart } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';

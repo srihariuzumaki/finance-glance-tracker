@@ -1,3 +1,4 @@
+
 // Define types for financial data
 export type Transaction = {
   id: string;
@@ -5,6 +6,13 @@ export type Transaction = {
   date: Date;
   description: string;
   category: string;
+};
+
+export type Budget = {
+  id: string;
+  categoryId: string;
+  amount: number;
+  month: string;
 };
 
 export type Category = {
