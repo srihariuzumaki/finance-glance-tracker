@@ -28,6 +28,14 @@ export const DEFAULT_CATEGORIES: Category[] = [
   { id: "10", name: "Other", icon: "ellipsis-h", color: "#8E9196" },
 ];
 
+// Initial budget data
+export const INITIAL_BUDGETS: Budget[] = [
+  { id: "1", categoryId: "1", amount: 500, month: "2024-04" },  // Food
+  { id: "2", categoryId: "2", amount: 200, month: "2024-04" },  // Transport
+  { id: "3", categoryId: "3", amount: 300, month: "2024-04" },  // Shopping
+  { id: "4", categoryId: "5", amount: 1000, month: "2024-04" }, // Housing
+];
+
 // Mock monthly data for chart display
 export const MOCK_MONTHLY_DATA = [
   { month: 'Jan', amount: 1200 },
@@ -59,4 +67,12 @@ export function formatDate(date: Date): string {
     day: 'numeric',
     year: 'numeric',
   }).format(date);
+}
+
+export function formatMonth(date: Date): string {
+  return date.toISOString().substring(0, 7);
+}
+
+export function getCurrentMonth(): string {
+  return new Date().toISOString().substring(0, 7);
 }

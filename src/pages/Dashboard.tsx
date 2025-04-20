@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Transaction, MOCK_MONTHLY_DATA, formatCurrency, DEFAULT_CATEGORIES } from '@/types/finance';
+import { Transaction, MOCK_MONTHLY_DATA, DEFAULT_CATEGORIES, INITIAL_BUDGETS, Budget } from '@/types/finance';
 import { ExpensesChart } from '@/components/dashboard/ExpensesChart';
 import { SummaryCards } from '@/components/dashboard/SummaryCards';
 import { CategoryPieChart } from '@/components/dashboard/CategoryPieChart';
@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import { PlusIcon, CreditCard, DollarSign, PieChart } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
-// Mock initial transactions
 const INITIAL_TRANSACTIONS: Transaction[] = [
   {
     id: '1',
@@ -44,11 +43,11 @@ const INITIAL_TRANSACTIONS: Transaction[] = [
 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState<Transaction[]>(INITIAL_TRANSACTIONS);
+  const [budgets, setBudgets] = useState<Budget[]>(INITIAL_BUDGETS);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>(undefined);
   const [showCategories, setShowCategories] = useState(false);
 
-  // Calculate totals for the summary
   const totalIncome = transactions
     .filter(t => t.amount > 0)
     .reduce((sum, t) => sum + t.amount, 0);
@@ -58,9 +57,8 @@ export default function Dashboard() {
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
   const balance = totalIncome - totalExpenses;
-  const availableBudget = balance * 0.6; // Simple calculation for demo purposes
+  const availableBudget = balance * 0.6;
 
-  // Handle transaction creation
   const handleAddTransaction = (transactionData: Omit<Transaction, 'id'>) => {
     const newTransaction = {
       ...transactionData,
@@ -69,7 +67,6 @@ export default function Dashboard() {
     setTransactions(prev => [...prev, newTransaction]);
   };
 
-  // Handle transaction edit
   const handleEditTransaction = (transactionData: Omit<Transaction, 'id'>) => {
     if (!editingTransaction) return;
     
@@ -82,30 +79,38 @@ export default function Dashboard() {
     );
   };
 
-  // Handle transaction deletion
   const handleDeleteTransaction = (id: string) => {
     setTransactions(prev => prev.filter(t => t.id !== id));
   };
 
-  // Open form for new transaction
   const openAddForm = () => {
     setEditingTransaction(undefined);
     setIsFormOpen(true);
   };
 
-  // Open form for editing
   const openEditForm = (transaction: Transaction) => {
     setEditingTransaction(transaction);
     setIsFormOpen(true);
   };
 
-  // Handle form submission
   const handleSaveTransaction = (transactionData: Omit<Transaction, 'id'>) => {
     if (editingTransaction) {
       handleEditTransaction(transactionData);
     } else {
       handleAddTransaction(transactionData);
     }
+  };
+
+  const handleUpdateBudget = (updatedBudget: Budget) => {
+    setBudgets(prev => {
+      const index = prev.findIndex(b => b.id === updatedBudget.id);
+      if (index >= 0) {
+        const newBudgets = [...prev];
+        newBudgets[index] = updatedBudget;
+        return newBudgets;
+      }
+      return [...prev, updatedBudget];
+    });
   };
 
   return (
@@ -115,7 +120,6 @@ export default function Dashboard() {
         <p className="text-muted-foreground">Your financial overview at a glance</p>
       </div>
 
-      {/* Key Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <StatCard 
           title="Balance" 
@@ -136,8 +140,7 @@ export default function Dashboard() {
           trend={{ value: "2.3%", positive: false }}
         />
       </div>
-      
-      {/* Charts Grid */}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <div className="finance-card">
           <h2 className="text-lg font-semibold mb-4">Monthly Expenses</h2>
@@ -147,9 +150,32 @@ export default function Dashboard() {
           <h2 className="text-lg font-semibold mb-4">Spending by Category</h2>
           <CategoryPieChart transactions={transactions} />
         </div>
+        <div className="finance-card">
+          <h2 className="text-lg font-semibold mb-4">Budget vs Actual</h2>
+          <BudgetComparisonChart 
+            transactions={transactions}
+            budgets={budgets}
+            categories={DEFAULT_CATEGORIES}
+          />
+        </div>
       </div>
 
-      {/* Recent Transactions and Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="finance-card">
+          <BudgetManager 
+            budgets={budgets}
+            onUpdateBudget={handleUpdateBudget}
+          />
+        </div>
+        <div className="space-y-6">
+          <SpendingInsights 
+            transactions={transactions}
+            budgets={budgets}
+            categories={DEFAULT_CATEGORIES}
+          />
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <RecentTransactionCard transactions={transactions.slice(0, 5)} showCategory />
@@ -175,7 +201,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Categories Section */}
       {showCategories && (
         <div className="col-span-full">
           <div className="finance-card">
@@ -199,7 +224,6 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Transaction Form Modal */}
       <TransactionForm 
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
