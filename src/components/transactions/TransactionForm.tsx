@@ -3,10 +3,9 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Transaction } from '@/types/finance';
+import { Transaction, DEFAULT_CATEGORIES } from '@/types/finance';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import {
@@ -29,6 +28,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 
@@ -40,6 +46,7 @@ const formSchema = z.object({
   date: z.date({
     required_error: 'Date is required',
   }),
+  category: z.string().min(1, 'Category is required'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -65,6 +72,7 @@ export function TransactionForm({
       description: transaction?.description || '',
       amount: transaction?.amount.toString() || '',
       date: transaction?.date || new Date(),
+      category: transaction?.category || 'Other',
     },
   });
 
@@ -76,6 +84,7 @@ export function TransactionForm({
         description: values.description,
         amount: Number(values.amount),
         date: values.date,
+        category: values.category,
       };
       
       onSave(newTransaction);
@@ -127,6 +136,37 @@ export function TransactionForm({
                       {...field} 
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <Select 
+                    onValueChange={field.onChange} 
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {DEFAULT_CATEGORIES.map((category) => (
+                        <SelectItem 
+                          key={category.id} 
+                          value={category.name}
+                        >
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

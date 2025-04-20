@@ -1,5 +1,6 @@
+
 import { useState } from 'react';
-import { Transaction, MOCK_MONTHLY_DATA } from '@/types/finance';
+import { Transaction, MOCK_MONTHLY_DATA, formatCurrency } from '@/types/finance';
 import { ExpensesChart } from '@/components/dashboard/ExpensesChart';
 import { SummaryCards } from '@/components/dashboard/SummaryCards';
 import { CategoryPieChart } from '@/components/dashboard/CategoryPieChart';
@@ -17,24 +18,28 @@ const INITIAL_TRANSACTIONS: Transaction[] = [
     description: 'Salary',
     amount: 3000,
     date: new Date('2023-04-01'),
+    category: 'Other',
   },
   {
     id: '2',
     description: 'Rent',
     amount: -1200,
     date: new Date('2023-04-05'),
+    category: 'Housing',
   },
   {
     id: '3',
     description: 'Groceries',
     amount: -150,
     date: new Date('2023-04-10'),
+    category: 'Food',
   },
   {
     id: '4',
     description: 'Freelance Work',
     amount: 500,
     date: new Date('2023-04-15'),
+    category: 'Other',
   },
 ];
 

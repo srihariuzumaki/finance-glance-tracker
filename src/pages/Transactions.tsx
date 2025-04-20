@@ -15,42 +15,49 @@ const INITIAL_TRANSACTIONS: Transaction[] = [
     description: 'Salary',
     amount: 3000,
     date: new Date('2023-04-01'),
+    category: 'Other',
   },
   {
     id: '2',
     description: 'Rent',
     amount: -1200,
     date: new Date('2023-04-05'),
+    category: 'Housing',
   },
   {
     id: '3',
     description: 'Groceries',
     amount: -150,
     date: new Date('2023-04-10'),
+    category: 'Food',
   },
   {
     id: '4',
     description: 'Freelance Work',
     amount: 500,
     date: new Date('2023-04-15'),
+    category: 'Other',
   },
   {
     id: '5',
     description: 'Utilities',
     amount: -200,
     date: new Date('2023-04-20'),
+    category: 'Utilities',
   },
   {
     id: '6',
     description: 'Dining Out',
     amount: -80,
     date: new Date('2023-04-25'),
+    category: 'Food',
   },
   {
     id: '7',
     description: 'Side Project',
     amount: 300,
     date: new Date('2023-04-28'),
+    category: 'Other',
   }
 ];
 
